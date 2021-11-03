@@ -9,26 +9,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap"
     rel="stylesheet">
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      align-items: center;
-      background: url(./images/布幕.png);
-      background-repeat: no-repeat;
-      background-size: cover;
+    *,
+    body{
+      height: 100%;
+    }
+
+    body{
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: url(./images/布幕.png)no-repeat center/cover;
       background-color: rgb(66, 5, 5);
+      position: relative;
     }
 
     #game {
       width: 80vw;
-      height: 80vh;
-      /* border: 1px solid black; */
+      height: 70vh;
+      border: 1px solid black;
       overflow: hidden;
-      position: relative;
       cursor: url(./images/af320-b4cak-002.ico)50 50, auto;
-      position: absolute;
-      bottom: 0;
+      position: fixed;
+      bottom: 5%;
+      left: 10%;
     }
 
     #game img {
@@ -48,21 +54,21 @@
 
     #btn-start {
       width: 10%;
+      height: 10%;
       background-color: rgb(248, 140, 17);
       border: 1px solid rgb(117, 3, 3);
       font-size: 2rem;
       color: brown;
       border-radius: 25%;
-      position: absolute;
-      left: 45%;
-      bottom: -10%;
       cursor: pointer;
+      z-index: 1;
     }
 
     #who {
-      width: 100vw;
+      width: 100%;
       height: 10vh;
-      position: relative;
+      position: absolute;
+      top: 0;
     }
 
     .wHo {
@@ -79,23 +85,47 @@
     }
 
     .fraction {
+      height: 25%;
       position: absolute;
       right: 10%;
     }
-    #footer{
-      position: absolute;
-      bottom: -10%;
+
+    #footer {
+      width: 100%;
+      height: 3%;
+      text-align: center;
+      line-height: 2px;
+      position: fixed;
+      bottom: 0%;
+    }
+
+    .before {
+      margin: 0;
+      background: rgba(0, 0, 123, 0.4);
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn{
+      display: flex;
+      align-self: center;
+      height: 30%;
     }
   </style>
 </head>
 
 <body>
+  <div class="before">
+    <input type="button" value="開始遊戲" id="btn-start">
+  </div>
   <div id="who">
     <div class="wHo">
       <h1>我是誰❓</h1>
     </div>
     <br>
-    <input type="button" value="開始遊戲" id="btn-start">
     <div class="fraction">
       <p>目前分數: <span id="score">0</span>分</p>
       <p>剩餘: <span id="time">0</span>秒</p>
@@ -104,7 +134,9 @@
     </div>
   </div>
   <div id="game"></div>
-  <div id="footer"><p>圖片版權歸The Pokémon Company所有</p></div>
+  <div id="footer">
+    <p>圖片版權歸The Pokémon Company所有</p>
+  </div>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="./jquery-3.6.0.min.js"></script>
   <script>
@@ -112,8 +144,8 @@
     let cd = 30
     let timer = 0
 
-    const audio=new Audio()
-    const au=new Audio()
+    const audio = new Audio()
+    const au = new Audio()
 
 
     var high = { score: 0, name: '???' }
@@ -168,8 +200,9 @@
 
 
     $('#btn-start').click(function () {
+      $('.before').css("display", "none")
       $(this).attr('disabled', true)
-      audio.src='./皮卡丘之歌之皮卡四重奏.mp3'
+      audio.src = './皮卡丘之歌之皮卡四重奏.mp3'
       audio.play()
       score = 0
       $('#score').text(score)
@@ -209,36 +242,45 @@
           $('#btn-start').attr('disabled', false)
           console.log("high.score", high)
 
-          if(score>=0){
-          Swal.fire({
-            title:  '時間到',
-            text: `你得到${score}分`,
-            width: 600,
-            padding: '3em',
-            background: '#fff url(./images/main.png)no-repeat',
-            backdrop: `
+          if (score >= 0) {
+            Swal.fire({
+              title: '時間到',
+              text: `你得到${score}分`,
+              width: 600,
+              padding: '3em',
+              background: '#fff url(./images/main.png)no-repeat',
+              backdrop: `
             rgba(0,0,123,0.4)
             url(./images/unnamed.gif)
             left top
             no-repeat
-          `
-          }
-          )}else{
+          `,
+            customClass:{
+              confirmButton: 'btn',
+            }
+            }
+            )
+          } else {
             Swal.fire({
-            title:`你得到${score}分`,
-            text: '加油好嗎?',
-            width: 600,
-            padding: '3em',
-            background: '#fff url(./images/main.png)no-repeat',
-            backdrop: `
+              title: `你得到${score}分`,
+              text: '加油好嗎?',
+              width: 600,
+              padding: '3em',
+              background: '#fff url(./images/main.png)no-repeat',
+              backdrop: `
             rgba(0,0,123,0.4)
             url(./images/brain-you-dumb.gif)
             left top
             no-repeat
-          `
+          `,
+            customClass:{
+              confirmButton: 'btn',
+            }
+            }
+            )
           }
-          )
-          }
+
+          $('.before').css("display","flex")
 
           audio.pause()
           audio.currentTime = 0
@@ -266,7 +308,7 @@
         score++
       } else if ($(this).hasClass('pika3')) {
         $(this).attr('src', './images/3.png')
-        au.src='./鴨子呱音效.mp3'
+        au.src = './鴨子呱音效.mp3'
         au.play()
         score -= 2
       }
